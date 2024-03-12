@@ -68,11 +68,9 @@ jobs:
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - name: Run `semantic-release`
-        uses: codfish/semantic-release-action@cbd853afe12037afb1306caca9d6b1ab6a58cf2a # v1.10.0
+        uses: codfish/semantic-release-action@07170c8b1613177f0f3aa4d2224e2e0933cd732c # v3.1.0
         id: sem-rel
         with:
-          branches: |
-            ["main"]
           plugins: |
             [ "@semantic-release/commit-analyzer",
               "@semantic-release/release-notes-generator",
