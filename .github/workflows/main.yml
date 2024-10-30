@@ -38,7 +38,7 @@ jobs:
         salt-version:
           - ${{ fromJSON(needs.gsv.outputs.salt-versions-els) }}
           - ${{ fromJSON(needs.gsv.outputs.salt-versions) }}
-          - 3007.0rc1
+          # Skip RC testing for now- 3007.0rc1
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Run this action

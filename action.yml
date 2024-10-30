@@ -33,15 +33,24 @@ runs:
       working-directory: ${{ runner.temp }}
       run: |
         $version = "${{ inputs.salt-version }}"
+
         $rcDir = $version.Contains("rc") ? "salt_rc/" : ""
+        $repoDomain = "packages.broadcom.com"
+
         $simpleVersion = $version -replace '(\d+\.\d+)rc\d+', '$1'
         if ([version]$simpleVersion -ge [version]"3006.0") {
-            $repoDir = "${rcDir}salt/py3/windows/minor/$version"
+            $repoDir = "artifactory/saltproject-generic/windows/${version}"
+        } elseif ([version]$simpleVersion -eq [version]"3005.5") {
+            $repoDomain = "www.dropbox.com"
+            $repoDir = "scl/fi/c9526kgslr7qgfl6gllgj"
+            $params = "?rlkey=zj1ztrsjjmzuna6rslnv35ski&st=pk1dudf3&dl=1"
         } else {
-            $repoDir = "${rcDir}windows"
+            Write-Host ("::error title=Setup Salt installation::Versions before v3005.5 are NOT supported")
+            exit 1
         }
+
         Invoke-WebRequest `
-          -Uri https://repo.saltproject.io/${repoDir}/Salt-Minion-${{ inputs.salt-version }}-Py3-AMD64-Setup.exe `
+          -Uri https://${repoDomain}/${repoDir}/Salt-Minion-${version}-Py3-AMD64-Setup.exe${params} `
           -OutFile salt.exe
         # The installer returns to the command line immediately after launch
         # so we MUST `-Wait` to ensure install finishes completely
