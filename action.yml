@@ -13,6 +13,10 @@ inputs:
   custom-config:
     description: Add a custom minion config
     required: false
+  timeout-seconds:
+    description: The maximum number of seconds to allow the Salt installation to run for
+    required: false
+    default: 180
 runs:
   using: composite
   steps:
@@ -52,10 +56,20 @@ runs:
         Invoke-WebRequest `
           -Uri https://${repoDomain}/${repoDir}/Salt-Minion-${version}-Py3-AMD64-Setup.exe${params} `
           -OutFile salt.exe
+
         # The installer returns to the command line immediately after launch
-        # so we MUST `-Wait` to ensure install finishes completely
-        Start-Process -Wait salt.exe -ArgumentList `
+        # when run without `-Wait` or assigning to a $process variable
+        $process = Start-Process -PassThru salt.exe -ArgumentList `
           /S,/custom-config=config
+
+        $timeout = ${{ inputs.timeout-seconds }}
+
+        if (!$process.WaitForExit(1000 * $timeout)) {
+          $process | Stop-Process
+          Write-Host ("::error title=Setup Salt installation::Installation timed out and was terminated")
+          exit 1
+        }
+
         if ([version]$simpleVersion -ge [version]"3004.0") {
             $saltPath = "C:\Program Files\Salt Project\Salt"
         } else {
