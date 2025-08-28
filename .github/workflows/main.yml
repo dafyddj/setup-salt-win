@@ -55,8 +55,7 @@ jobs:
           - ${{ fromJSON(needs.gsv.outputs.salt-versions) }}
           # Skip RC testing for now- 3007.0rc1
     steps:
-<<<<<<< before updating
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Run this action
         uses: ./
         with:
@@ -65,25 +64,6 @@ jobs:
             test_key1: test_value1
             test_key2: test_value2
       - name: Verify Salt version installed
-=======
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - id: get-value
-        name: Run this action
-        uses: ./
-      - run: |
-          echo "::notice ::Value: ${{ steps.get-value.outputs.value }}"
-  show-value:
-    name: Show value
-    needs:
-      - gv
-      - should-run
-    if: fromJSON(needs.should-run.outputs.should-run)
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    steps:
-      - run: |
-          echo "::notice ::Value: $VALUE"
->>>>>>> after updating
         env:
           SALT_VER_EXPECTED: ${{ matrix.salt-version }}
         run: |
