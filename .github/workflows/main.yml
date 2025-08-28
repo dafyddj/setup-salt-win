@@ -46,7 +46,8 @@ jobs:
   test:
     name: Test this action
     needs: gsv
-    runs-on: windows-latest
+    runs-on: windows-2022
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
