@@ -72,8 +72,8 @@ jobs:
       - name: Verify custom config
         run: |
           foreach ($i in 1..2) {
-              $value = salt-call config.get "test_key$i" --out newline_values_only
-              if ($value -ne "test_value$i") {
+              $result = salt-call config.get "test_key$i" --out json | ConvertFrom-Json
+              if ($result.local -ne "test_value$i") {
                   exit 1
               }
           }
