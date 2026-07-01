@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: 3.14.6
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
@@ -39,7 +39,7 @@ jobs:
       salt-versions: ${{ steps.get-salt-versions.outputs.salt-versions }}
     steps:
       - id: get-salt-versions
-        uses: dafyddj/get-salt-versions@07cb5c1245f4d90ad03d5a9073cfc3d0d1419fe5 # v3.5.5
+        uses: dafyddj/get-salt-versions@fa789a8d245453ed72ebefb88788f20ecb0570ce # v3.6.2
   test:
     name: Test this action
     needs: gsv
@@ -72,8 +72,8 @@ jobs:
       - name: Verify custom config
         run: |
           foreach ($i in 1..2) {
-              $value = salt-call config.get "test_key$i" --out newline_values_only
-              if ($value -ne "test_value$i") {
+              $result = salt-call config.get "test_key$i" --out json | ConvertFrom-Json
+              if ($result.local -ne "test_value$i") {
                   exit 1
               }
           }
